@@ -6,7 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { Crop, Download, Maximize2, FileDown } from "lucide-react";
+import { Crop, Download, Maximize2, Upload } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -19,12 +19,14 @@ interface EditingToolbarProps {
   onCrop?: () => void;
   onResize?: () => void;
   onDownload?: (format: string) => void;
+  onUpload?: () => void;
 }
 
 const EditingToolbar = ({
   onCrop = () => {},
   onResize = () => {},
   onDownload = () => {},
+  onUpload = () => {},
 }: EditingToolbarProps) => {
   return (
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-white rounded-lg shadow-lg p-2 flex items-center gap-2 border border-gray-200">
@@ -61,6 +63,22 @@ const EditingToolbar = ({
           </TooltipContent>
         </Tooltip>
 
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onUpload}
+              className="hover:bg-teal-50 hover:text-teal-600"
+            >
+              <Upload className="h-5 w-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Upload New Image</p>
+          </TooltipContent>
+        </Tooltip>
+
         <div className="h-6 w-px bg-gray-200 mx-2" />
 
         <div className="flex items-center gap-2">
@@ -85,6 +103,7 @@ const EditingToolbar = ({
                 size="icon"
                 className="bg-teal-600 hover:bg-teal-700"
                 onClick={() => onDownload("png")}
+                disabled={!onDownload}
               >
                 <Download className="h-5 w-5" />
               </Button>

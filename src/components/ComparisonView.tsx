@@ -10,6 +10,7 @@ interface ComparisonViewProps {
   onCrop?: () => void;
   onResize?: () => void;
   onDownload?: (format: string) => void;
+  onUpload?: () => void;
 }
 
 const ComparisonView = ({
@@ -20,12 +21,13 @@ const ComparisonView = ({
   onCrop = () => {},
   onResize = () => {},
   onDownload = () => {},
+  onUpload = () => {},
 }: ComparisonViewProps) => {
   return (
     <div className="w-full h-full relative flex flex-col">
-      <div className="flex-1 flex flex-col md:flex-row gap-4 p-4 h-full overflow-hidden">
+      <div className="flex-1 flex flex-col md:flex-row gap-4 p-4 h-full">
         {/* Original Image Panel */}
-        <div className="flex-1 bg-white rounded-lg shadow-sm overflow-hidden relative">
+        <div className="flex-1 bg-white/5 backdrop-blur-sm rounded-lg overflow-hidden relative">
           <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
             Original
           </div>
@@ -37,7 +39,7 @@ const ComparisonView = ({
         </div>
 
         {/* Processed Image Panel */}
-        <div className="flex-1 bg-white rounded-lg shadow-sm overflow-hidden relative">
+        <div className="flex-1 bg-white/5 backdrop-blur-sm rounded-lg overflow-hidden relative">
           <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
             Processed
           </div>
@@ -59,6 +61,7 @@ const ComparisonView = ({
         onCrop={onCrop}
         onResize={onResize}
         onDownload={onDownload}
+        onUpload={onUpload}
       />
     </div>
   );

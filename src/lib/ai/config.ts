@@ -7,11 +7,41 @@ export type ModelConfig = {
 
 export const AVAILABLE_MODELS: ModelConfig[] = [
   {
-    id: "google/gemini-2.0-flash-thinking-exp:free",
-    name: "Gemini 2.0 Flash",
-    contextWindow: 32000,
-    costPer1kTokens: 0,
+    id: "anthropic/claude-3-opus",
+    name: "Claude 3 Opus",
+    contextWindow: 200000,
+    costPer1kTokens: 15,
+  },
+  {
+    id: "anthropic/claude-3-sonnet",
+    name: "Claude 3 Sonnet",
+    contextWindow: 200000,
+    costPer1kTokens: 3,
+  },
+  {
+    id: "google/gemini-pro",
+    name: "Gemini Pro",
+    contextWindow: 30720,
+    costPer1kTokens: 1,
+  },
+  {
+    id: "mistralai/mistral-large",
+    name: "Mistral Large",
+    contextWindow: 32768,
+    costPer1kTokens: 8,
+  },
+  {
+    id: "mistralai/mistral-medium",
+    name: "Mistral Medium",
+    contextWindow: 32768,
+    costPer1kTokens: 2.5,
+  },
+  {
+    id: "mistralai/mistral-small",
+    name: "Mistral Small",
+    contextWindow: 32768,
+    costPer1kTokens: 0.2,
   },
 ];
 
-export const SELECTED_MODEL = AVAILABLE_MODELS[0]; // Using free Gemini model
+export const SELECTED_MODEL = AVAILABLE_MODELS[2]; // Default to Gemini Pro

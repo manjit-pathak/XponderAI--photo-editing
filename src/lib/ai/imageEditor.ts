@@ -1,5 +1,6 @@
 import { chat, ChatMessage } from "./openrouter";
 import { filters } from "../filters";
+import { SELECTED_MODEL } from "./config";
 
 const SYSTEM_PROMPT = `You are an AI image editing assistant. You help users edit their images by suggesting and applying appropriate filters.
 Available filters: ${Object.entries(filters)
@@ -11,6 +12,12 @@ export class ImageEditor {
     { role: "system", content: SYSTEM_PROMPT },
   ];
 
+  private selectedModel: string = SELECTED_MODEL.id;
+
+  setModel(modelId: string) {
+    this.selectedModel = modelId;
+  }
+
   async processUserRequest(userInput: string): Promise<{
     response: string;
     suggestedFilters: Array<{
@@ -20,7 +27,7 @@ export class ImageEditor {
   }> {
     this.messages.push({ role: "user", content: userInput });
 
-    const response = await chat(this.messages);
+    const response = await chat(this.messages, this.selectedModel);
     this.messages.push({ role: "assistant", content: response });
 
     // Parse the response to extract filter suggestions

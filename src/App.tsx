@@ -1,15 +1,13 @@
 import { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import ImageEditor from "./pages/ImageEditor";
-import { ChatInterface } from "./components/ChatInterface";
+import HomePage from "./components/HomePage";
 
 function App() {
   return (
     <Suspense fallback={<p>Loading...</p>}>
       <Routes>
-        <Route path="/" element={<ImageEditor />} />
+        <Route path="/" element={<HomePage />} />
       </Routes>
-      <ChatInterface />
     </Suspense>
   );
 }

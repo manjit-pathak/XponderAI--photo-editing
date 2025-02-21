@@ -1,24 +1,37 @@
-# XponderAI - AI-Powered Photo Editor
+# Sobi - AI Image Enhancement Assistant
 
-A modern web application that combines AI assistance with powerful image editing capabilities. Upload your photos and get real-time AI suggestions for enhancing them using our built-in filters.
+A sleek, modern web application that combines AI chat capabilities with powerful image processing features. Sobi helps photographers enhance their images through natural language interaction and advanced filtering techniques.
 
 ## Features
 
+### Enhanced Chat Interface
+- Smooth word-by-word text streaming for natural conversation flow
+- Fixed-height chat window with clean scrolling
+- Support for multiple AI models including Claude, Gemini, and Mistral
+- Real-time typing indicators and animations
+
+### Modern UI/UX
+- Minimalist dark theme with teal accents
+- Fixed-layout design with no page scrolling
+- Responsive and fluid interface
+- Convenient bottom-mounted upload controls
+
 ### Image Processing
-- Clean, drag-and-drop upload interface
-- Side-by-side comparison view of original and processed images
+- Single image and batch processing capabilities
+- Side-by-side comparison view
 - Real-time image processing with custom filters
 - Multiple export formats (PNG, JPG, WebP)
 
-### AI Assistant
-- Built-in AI chat interface powered by Gemini
-- Smart filter suggestions based on your requests
-- Natural language processing for image editing commands
+### AI Features
+- Smart filter suggestions based on natural language requests
+- Context-aware image enhancement recommendations
 - Real-time assistance and explanations
+- Multiple AI model options for different needs
 
 ### Image Filters
 - Brightness adjustment
 - Contrast enhancement
+- Cinematic color grading
 - More filters coming soon!
 
 ## Tech Stack

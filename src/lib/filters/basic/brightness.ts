@@ -14,14 +14,14 @@ export const brightnessFilter: Filter = {
       step: 1,
     },
   ],
-  apply: async (imageData: ImageData) => {
+  apply: async (imageData: ImageData, params: { level: number }) => {
     const data = imageData.data;
-    const level = Math.pow(2, level / 100);
+    const factor = 1 + params.level / 100;
 
     for (let i = 0; i < data.length; i += 4) {
-      data[i] = Math.min(255, data[i] * level); // Red
-      data[i + 1] = Math.min(255, data[i + 1] * level); // Green
-      data[i + 2] = Math.min(255, data[i + 2] * level); // Blue
+      data[i] = Math.min(255, Math.max(0, data[i] * factor)); // Red
+      data[i + 1] = Math.min(255, Math.max(0, data[i + 1] * factor)); // Green
+      data[i + 2] = Math.min(255, Math.max(0, data[i + 2] * factor)); // Blue
     }
 
     return imageData;

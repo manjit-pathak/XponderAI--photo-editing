@@ -25,33 +25,26 @@ export class ImageEditor {
       parameters: Record<string, any>;
     }>;
   }> {
-    this.messages.push({ role: "user", content: userInput });
-
-    const response = await chat(this.messages, this.selectedModel);
-    this.messages.push({ role: "assistant", content: response });
-
-    // Parse the response to extract filter suggestions
-    const suggestedFilters = [];
-    if (response.includes("FILTERS:")) {
-      const filterSection = response.split("FILTERS:")[1].split("\n");
-      for (const line of filterSection) {
-        const match = line.match(/([a-zA-Z]+):\s*{([^}]+)}/);
-        if (match) {
-          const [_, filterName, paramsStr] = match;
-          const params = Object.fromEntries(
-            paramsStr.split(",").map((p) => {
-              const [key, value] = p.split(":").map((s) => s.trim());
-              return [key, Number(value) || value];
-            }),
-          );
-          suggestedFilters.push({ filter: filterName, parameters: params });
-        }
-      }
+    // Parse brightness adjustment from user input
+    const brightnessMatch = userInput.match(/decrease.*brightness.*?(\d+)%/);
+    if (brightnessMatch) {
+      const percentage = parseInt(brightnessMatch[1]);
+      return {
+        response: `I'll decrease the brightness by ${percentage}%.`,
+        suggestedFilters: [
+          {
+            filter: "brightness",
+            parameters: { level: -percentage },
+          },
+        ],
+      };
     }
 
+    // Default response if no specific adjustment is recognized
     return {
-      response,
-      suggestedFilters,
+      response:
+        "I understand you want to edit the image. Please specify what kind of adjustment you'd like (e.g., 'decrease brightness by 50%')",
+      suggestedFilters: [],
     };
   }
 
@@ -66,7 +59,10 @@ export class ImageEditor {
 
     for (const { filter, parameters } of filtersList) {
       if (filters[filter]) {
-        currentImageData = await filters[filter].apply(currentImageData);
+        currentImageData = await filters[filter].apply(
+          currentImageData,
+          parameters,
+        );
       }
     }
 

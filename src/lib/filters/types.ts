@@ -1,7 +1,10 @@
 export interface Filter {
   name: string;
   description: string;
-  apply: (imageData: ImageData) => Promise<ImageData>;
+  apply: (
+    imageData: ImageData,
+    parameters?: Record<string, any>,
+  ) => Promise<ImageData>;
   parameters?: FilterParameter[];
 }
 

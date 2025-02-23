@@ -119,6 +119,7 @@ export function ChatInterface() {
         return newMessages;
       });
 
+      // Process image if we have filters to apply
       if (currentImage && suggestedFilters.length > 0) {
         // Convert base64 to ImageData
         const img = new Image();
@@ -144,9 +145,10 @@ export function ChatInterface() {
 
         // Convert back to base64
         const processedBase64 = canvas.toDataURL("image/jpeg", 0.95);
+
         setProcessedImageUrl(processedBase64);
 
-        // Add preview button
+        // Add preview button only once
         setMessages((prev) => [
           ...prev,
           {

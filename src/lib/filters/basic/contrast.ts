@@ -14,14 +14,24 @@ export const contrastFilter: Filter = {
       step: 1,
     },
   ],
-  apply: async (imageData: ImageData) => {
+  apply: async (imageData: ImageData, params: { level: number }) => {
     const data = imageData.data;
-    const factor = (259 * (level + 255)) / (255 * (259 - level));
+    const factor = 1 + params.level / 100;
 
     for (let i = 0; i < data.length; i += 4) {
-      data[i] = factor * (data[i] - 128) + 128; // Red
-      data[i + 1] = factor * (data[i + 1] - 128) + 128; // Green
-      data[i + 2] = factor * (data[i + 2] - 128) + 128; // Blue
+      // Apply contrast to each channel
+      data[i] = Math.min(
+        255,
+        Math.max(0, ((data[i] / 255 - 0.5) * factor + 0.5) * 255),
+      );
+      data[i + 1] = Math.min(
+        255,
+        Math.max(0, ((data[i + 1] / 255 - 0.5) * factor + 0.5) * 255),
+      );
+      data[i + 2] = Math.min(
+        255,
+        Math.max(0, ((data[i + 2] / 255 - 0.5) * factor + 0.5) * 255),
+      );
     }
 
     return imageData;

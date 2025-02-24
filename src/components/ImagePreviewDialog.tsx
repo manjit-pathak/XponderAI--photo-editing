@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,12 +7,13 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { ImageEditorPanel } from "./ImageEditorPanel";
 
 interface ImagePreviewDialogProps {
   isOpen: boolean;
   onClose: () => void;
   imageUrl: string;
-  onDownload: () => void;
+  onDownload: (imageUrl: string) => void;
   title?: string;
 }
 
@@ -20,26 +22,49 @@ export function ImagePreviewDialog({
   onClose,
   imageUrl,
   onDownload,
-  title = "Processed Image",
+  title = "Image Editor",
 }: ImagePreviewDialogProps) {
+  const [processedImageUrl, setProcessedImageUrl] = useState(imageUrl);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl bg-[#0F2A27] border-[#1A3B37] text-white p-6">
+      <DialogContent className="max-w-6xl bg-[#0F2A27] border-[#1A3B37] text-white p-6">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <div className="relative mt-4">
-          <div className="aspect-auto max-h-[70vh] max-w-[90vw] overflow-hidden rounded-lg flex items-center justify-center">
-            <img
-              src={imageUrl}
-              alt="Processed"
-              className="max-w-full max-h-[65vh] w-auto h-auto object-contain"
-            />
+        <div className="mt-4 space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <div className="text-sm text-[#00A693] font-medium">Original</div>
+              <div className="aspect-auto h-[400px] bg-black/20 rounded-lg overflow-hidden">
+                <img
+                  src={imageUrl}
+                  alt="Original"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="text-sm text-[#00A693] font-medium">Preview</div>
+              <div className="aspect-auto h-[400px] bg-black/20 rounded-lg overflow-hidden">
+                <img
+                  src={processedImageUrl}
+                  alt="Preview"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
           </div>
-          <div className="absolute bottom-4 right-4 flex gap-2 bg-black/50 backdrop-blur-sm p-2 rounded-lg">
+
+          <ImageEditorPanel
+            originalImage={imageUrl}
+            onImageProcessed={setProcessedImageUrl}
+          />
+
+          <div className="flex justify-end gap-2">
             <Button
               className="bg-[#00A693] hover:bg-[#008F7D] shadow-lg"
-              onClick={onDownload}
+              onClick={() => onDownload(processedImageUrl)}
               size="lg"
             >
               <Download className="mr-2 h-5 w-5" />

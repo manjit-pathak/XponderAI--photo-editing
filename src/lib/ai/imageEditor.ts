@@ -5,10 +5,23 @@ import { SELECTED_MODEL } from "./config";
 const SYSTEM_PROMPT = `You are Sobi, an AI image editing assistant. You help users enhance their images through natural conversation. You can adjust brightness and contrast of images.
 
 When suggesting adjustments:
-- Always be specific with percentage values
+- Always be specific with percentage values (e.g. "increase brightness by 30%")
 - Use natural conversation while being precise with numbers
-- Never mention previews or applying changes in your responses
-- Focus on describing the adjustments and their effects`;
+- Always assume changes will be visible to the user
+- Describe what you're doing (e.g. "I've increased the brightness by 30% to make the image lighter")
+- Never say you can't show changes or previews
+- Never apologize for not being able to show changes
+- Focus on describing what you did and how it affects the image
+
+Example good responses:
+"I've increased the brightness by 30% to make the image lighter and more vibrant."
+"I've adjusted the contrast by 40% to make the colors pop more."
+"I've made the image 20% brighter to bring out more detail in the shadows."
+
+Example bad responses:
+"I can't show you the changes"
+"Unfortunately I can't display the edited image"
+"The preview should be available"`;
 
 export class ImageEditor {
   private messages: ChatMessage[] = [
@@ -16,9 +29,22 @@ export class ImageEditor {
   ];
 
   private selectedModel: string = SELECTED_MODEL.id;
+  private currentImageData: string | null = null;
 
   setModel(modelId: string) {
     this.selectedModel = modelId;
+  }
+
+  setCurrentImage(imageData: string) {
+    this.currentImageData = imageData;
+    this.messages = [
+      { role: "system", content: SYSTEM_PROMPT },
+      {
+        role: "system",
+        content:
+          "An image has been uploaded. You can now suggest adjustments for brightness and contrast.",
+      },
+    ];
   }
 
   async processUserRequest(userInput: string): Promise<{
@@ -28,6 +54,13 @@ export class ImageEditor {
       parameters: Record<string, any>;
     }>;
   }> {
+    if (!this.currentImageData) {
+      return {
+        response: "Please upload an image first before requesting adjustments.",
+        suggestedFilters: [],
+      };
+    }
+
     this.messages.push({ role: "user", content: userInput });
 
     try {
@@ -40,9 +73,11 @@ export class ImageEditor {
       }> = [];
 
       // Look for brightness adjustments
-      const brightnessMatch = aiResponse.match(
-        /(?:increase|decrease|reduce|lower|raise)\s+(?:the\s+)?brightness\s+(?:by\s+)?(\d+)%/,
-      );
+      const brightnessMatch = aiResponse
+        .toLowerCase()
+        .match(
+          /(?:increase|decrease|reduce|lower|raise)\s+(?:the\s+)?brightness\s+(?:by\s+)?(\d+)%/,
+        );
       if (brightnessMatch) {
         const percentage = parseInt(brightnessMatch[1]);
         const direction = aiResponse.match(
@@ -57,9 +92,11 @@ export class ImageEditor {
       }
 
       // Look for contrast adjustments
-      const contrastMatch = aiResponse.match(
-        /(?:increase|decrease|reduce|lower|raise)\s+(?:the\s+)?contrast\s+(?:by\s+)?(\d+)%/,
-      );
+      const contrastMatch = aiResponse
+        .toLowerCase()
+        .match(
+          /(?:increase|decrease|reduce|lower|raise)\s+(?:the\s+)?contrast\s+(?:by\s+)?(\d+)%/,
+        );
       if (contrastMatch) {
         const percentage = parseInt(contrastMatch[1]);
         const direction = aiResponse.match(

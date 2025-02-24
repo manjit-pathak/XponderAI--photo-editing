@@ -56,6 +56,7 @@ export function ChatInterface() {
     try {
       const storedImage = await imageStore.addImage(file);
       setCurrentImage(storedImage);
+      imageEditor.setCurrentImage(storedImage.data);
       setMessages((prev) => [
         ...prev,
         {
@@ -302,9 +303,9 @@ export function ChatInterface() {
         isOpen={showPreview}
         onClose={() => setShowPreview(false)}
         imageUrl={processedImageUrl}
-        onDownload={() => {
+        onDownload={(imageUrl) => {
           const link = document.createElement("a");
-          link.href = processedImageUrl;
+          link.href = imageUrl;
           link.download = "processed-" + (currentImage?.name || "image.jpg");
           document.body.appendChild(link);
           link.click();

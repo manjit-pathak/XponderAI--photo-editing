@@ -16,7 +16,7 @@ export default function HomePage() {
       </header>
 
       <main className="flex-1 container mx-auto px-4 pt-1 pb-4 overflow-hidden">
-        <div className="w-full max-w-4xl mx-auto h-full flex flex-col">
+        <div className="w-full max-w-[90%] mx-auto h-full flex flex-col">
           <div className="flex-1">
             <ChatInterface />
           </div>

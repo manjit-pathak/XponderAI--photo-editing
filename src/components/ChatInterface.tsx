@@ -185,12 +185,12 @@ export function ChatInterface() {
 
   return (
     <div
-      className="flex h-full gap-4 overflow-hidden w-full pl-8 pr-4"
+      className="flex h-full gap-8 overflow-hidden w-full"
       style={{ maxHeight: "calc(100vh - 180px)" }}
     >
       {/* Chat Section */}
       <div
-        className={`flex flex-col bg-[#0B1C1A] rounded-lg overflow-hidden transition-all duration-300 ${currentImage ? "w-[65%]" : "w-full"}`}
+        className={`flex flex-col bg-[#0B1C1A] rounded-lg overflow-hidden transition-all duration-300 ${currentImage ? "w-[55%]" : "w-full"}`}
       >
         <div className="p-4 border-b border-[#1A3B37] bg-[#0B1C1A] flex items-center justify-between">
           <input
@@ -316,7 +316,7 @@ export function ChatInterface() {
 
       {/* Image Editor Section */}
       {currentImage && (
-        <div className="w-[35%] bg-[#0F2A27] rounded-lg overflow-hidden transition-all duration-300 flex flex-col h-full">
+        <div className="w-[45%] bg-[#0F2A27] rounded-lg overflow-hidden transition-all duration-300 flex flex-col h-full">
           <div className="p-4 border-b border-[#1A3B37]">
             <h3 className="text-white font-medium">Image Preview</h3>
           </div>

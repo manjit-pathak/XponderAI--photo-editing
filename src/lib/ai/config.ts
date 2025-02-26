@@ -3,6 +3,7 @@ export type ModelConfig = {
   name: string;
   contextWindow: number;
   costPer1kTokens: number;
+  type: "openrouter" | "ollama";
 };
 
 export const AVAILABLE_MODELS: ModelConfig[] = [
@@ -11,6 +12,21 @@ export const AVAILABLE_MODELS: ModelConfig[] = [
     name: "Claude 3 Opus",
     contextWindow: 200000,
     costPer1kTokens: 15,
+    type: "openrouter",
+  },
+  {
+    id: "llama2",
+    name: "Llama 2 (Local)",
+    contextWindow: 4096,
+    costPer1kTokens: 0,
+    type: "ollama",
+  },
+  {
+    id: "mistral",
+    name: "Mistral (Local)",
+    contextWindow: 8192,
+    costPer1kTokens: 0,
+    type: "ollama",
   },
   {
     id: "anthropic/claude-3-sonnet",

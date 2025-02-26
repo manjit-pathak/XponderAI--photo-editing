@@ -1,4 +1,6 @@
 import { chat, ChatMessage } from "./openrouter";
+import { ollamaChat } from "./ollama";
+import { AVAILABLE_MODELS } from "./config";
 import { filters } from "../filters";
 import { SELECTED_MODEL } from "./config";
 
@@ -64,7 +66,15 @@ export class ImageEditor {
     this.messages.push({ role: "user", content: userInput });
 
     try {
-      const aiResponse = await chat(this.messages, this.selectedModel);
+      const selectedModelConfig = AVAILABLE_MODELS.find(
+        (m) => m.id === this.selectedModel,
+      );
+      if (!selectedModelConfig) throw new Error("Invalid model selected");
+
+      const aiResponse =
+        selectedModelConfig.type === "ollama"
+          ? await ollamaChat(this.messages, this.selectedModel)
+          : await chat(this.messages, this.selectedModel);
       this.messages.push({ role: "assistant", content: aiResponse });
 
       const suggestedFilters: Array<{

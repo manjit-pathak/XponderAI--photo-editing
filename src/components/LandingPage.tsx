@@ -1,33 +1,28 @@
-import { Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 import { MovingShapes } from "./3d/MovingShapes";
+import { SignupDialog } from "./SignupDialog";
+
+// Background component with fallback
+const AnimatedBackground = () => {
+  return (
+    <div className="absolute inset-0 bg-[#0F2A27]">
+      <MovingShapes />
+      {/* Gradient overlay to ensure text readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0F2A27] opacity-80"></div>
+    </div>
+  );
+};
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const [showSignup, setShowSignup] = useState(false);
 
   return (
     <div className="h-screen w-full relative bg-[#0F2A27] overflow-hidden">
-      <Canvas
-        className="absolute inset-0"
-        camera={{ position: [0, 0, 20], fov: 45 }}
-      >
-        <Suspense fallback={null}>
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} intensity={1} />
-          <MovingShapes />
-          <OrbitControls
-            enableZoom={false}
-            enablePan={false}
-            autoRotate
-            autoRotateSpeed={0.5}
-            maxPolarAngle={Math.PI / 2}
-            minPolarAngle={Math.PI / 2}
-          />
-        </Suspense>
-      </Canvas>
+      {/* Animated background */}
+      <AnimatedBackground />
 
       <div className="relative z-10 h-full flex flex-col items-center justify-center text-white">
         <div className="text-center space-y-6 max-w-2xl mx-auto px-4">
@@ -51,12 +46,16 @@ export default function LandingPage() {
             <Button
               variant="outline"
               className="border-[#00A693] text-[#00A693] hover:bg-[#00A693] hover:text-white px-8 py-6 text-lg"
+              onClick={() => setShowSignup(true)}
             >
               Sign Up
             </Button>
           </div>
         </div>
       </div>
+
+      {/* Signup Dialog */}
+      <SignupDialog isOpen={showSignup} onClose={() => setShowSignup(false)} />
     </div>
   );
 }

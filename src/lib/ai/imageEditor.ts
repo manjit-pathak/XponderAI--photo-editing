@@ -83,6 +83,12 @@ export class ImageEditor {
       }> = [];
 
       // Look for brightness adjustments
+      // Force add brightness filter for testing
+      suggestedFilters.push({
+        filter: "brightness",
+        parameters: { level: 20 },
+      });
+
       const brightnessMatch = aiResponse
         .toLowerCase()
         .match(

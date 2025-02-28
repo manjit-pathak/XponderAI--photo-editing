@@ -28,7 +28,7 @@ export function ImagePreviewDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl bg-[#0F2A27] border-[#1A3B37] text-white p-6">
+      <DialogContent className="max-w-3xl bg-[#0F2A27] border-[#1A3B37] text-white p-6">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
@@ -36,7 +36,7 @@ export function ImagePreviewDialog({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="text-sm text-[#00A693] font-medium">Original</div>
-              <div className="aspect-auto h-[400px] bg-black/20 rounded-lg overflow-hidden">
+              <div className="aspect-auto h-[120px] bg-black/20 rounded-lg overflow-hidden">
                 <img
                   src={imageUrl}
                   alt="Original"
@@ -46,7 +46,7 @@ export function ImagePreviewDialog({
             </div>
             <div className="space-y-2">
               <div className="text-sm text-[#00A693] font-medium">Preview</div>
-              <div className="aspect-auto h-[400px] bg-black/20 rounded-lg overflow-hidden">
+              <div className="aspect-auto h-[120px] bg-black/20 rounded-lg overflow-hidden">
                 <img
                   src={processedImageUrl}
                   alt="Preview"

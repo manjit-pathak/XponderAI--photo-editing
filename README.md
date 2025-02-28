@@ -34,6 +34,12 @@ A sleek, modern web application that combines AI chat capabilities with powerful
 - Cinematic color grading
 - More filters coming soon!
 
+### Recent Updates
+- Added toggle functionality to Advanced Edit button
+- Improved image preview dialog with smaller dimensions
+- Enhanced user experience with better dialog sizing
+- Fixed UI issues with image preview and editing panels
+
 ## Tech Stack
 
 - React + TypeScript

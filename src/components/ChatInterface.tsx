@@ -1,7 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Send, Settings2, Image as ImageIcon, Download } from "lucide-react";
+import {
+  Send,
+  Settings2,
+  Image as ImageIcon,
+  Download,
+  Sliders,
+} from "lucide-react";
 import { ImagePreviewDialog } from "./ImagePreviewDialog";
 import { ImageEditorPanel } from "./ImageEditorPanel";
 import { ImageEditor } from "@/lib/ai/imageEditor";
@@ -19,6 +25,7 @@ const imageEditor = new ImageEditor();
 
 export function ChatInterface() {
   const [showPreview, setShowPreview] = useState(false);
+  const [showAdvancedEdit, setShowAdvancedEdit] = useState(false);
   const [processedImageUrl, setProcessedImageUrl] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [currentImage, setCurrentImage] = useState<StoredImage | null>(null);
@@ -160,14 +167,21 @@ export function ChatInterface() {
         setProcessedImageUrl(processedBase64);
 
         // Add preview button only once
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: "",
-            isPreviewButton: true,
-          },
-        ]);
+        setMessages((prev) => {
+          // Check if we already have a message with preview buttons
+          const hasPreviewButton = prev.some((msg) => msg.isPreviewButton);
+          if (hasPreviewButton) {
+            return prev;
+          }
+          return [
+            ...prev,
+            {
+              role: "assistant",
+              content: "Here are your options for this edited image:",
+              isPreviewButton: true,
+            },
+          ];
+        });
       }
     } catch (error) {
       console.error("Error processing request:", error);
@@ -190,7 +204,7 @@ export function ChatInterface() {
     >
       {/* Chat Section */}
       <div
-        className={`flex flex-col bg-[#0B1C1A] rounded-lg overflow-hidden transition-all duration-300 ${currentImage ? "w-[55%]" : "w-full"}`}
+        className={`flex flex-col bg-[#0B1C1A] rounded-lg overflow-hidden transition-all duration-300 ${currentImage && showAdvancedEdit ? "w-[55%]" : "w-full"}`}
       >
         <div className="p-4 border-b border-[#1A3B37] bg-[#0B1C1A] flex items-center justify-between">
           <input
@@ -250,7 +264,7 @@ export function ChatInterface() {
                     <img
                       src={message.imageUrl}
                       alt="Uploaded"
-                      className="max-w-[300px] max-h-[200px] w-auto h-auto object-contain rounded-lg"
+                      className="max-w-[200px] max-h-[150px] w-auto h-auto object-contain rounded-lg"
                     />
                   ) : (
                     <>
@@ -268,6 +282,13 @@ export function ChatInterface() {
                       >
                         <ImageIcon className="h-4 w-4" />
                         Preview
+                      </Button>
+                      <Button
+                        onClick={() => setShowAdvancedEdit(!showAdvancedEdit)}
+                        className="bg-[#1A3B37] hover:bg-[#2A4B47] gap-2"
+                      >
+                        <Sliders className="h-4 w-4" />
+                        Advanced Edit
                       </Button>
                       <Button
                         onClick={() => {
@@ -315,10 +336,18 @@ export function ChatInterface() {
       </div>
 
       {/* Image Editor Section */}
-      {currentImage && (
+      {currentImage && showAdvancedEdit && (
         <div className="w-[45%] bg-[#0F2A27] rounded-lg overflow-hidden transition-all duration-300 flex flex-col h-full">
-          <div className="p-4 border-b border-[#1A3B37]">
-            <h3 className="text-white font-medium">Image Preview</h3>
+          <div className="p-4 border-b border-[#1A3B37] flex justify-between items-center">
+            <h3 className="text-white font-medium">Advanced Image Editor</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAdvancedEdit(false)}
+              className="text-[#00A693] hover:text-white hover:bg-[#1A3B37]"
+            >
+              Close
+            </Button>
           </div>
           <div className="flex-1 overflow-hidden">
             <ImageEditorPanel
@@ -348,6 +377,22 @@ export function ChatInterface() {
           </div>
         </div>
       )}
+
+      {/* Image Preview Dialog */}
+      <ImagePreviewDialog
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        imageUrl={processedImageUrl || currentImage?.data || ""}
+        onDownload={(imageUrl) => {
+          const link = document.createElement("a");
+          link.href = imageUrl;
+          link.download = "processed-" + (currentImage?.name || "image.jpg");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }}
+        title="Image Preview"
+      />
     </div>
   );
 }

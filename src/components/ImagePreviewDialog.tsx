@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { useThemeStore } from "@/lib/store/themeStore";
 import { ImageEditorPanel } from "./ImageEditorPanel";
 
 interface ImagePreviewDialogProps {
@@ -28,14 +29,19 @@ export function ImagePreviewDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl bg-[#0F2A27] border-[#1A3B37] text-white p-6">
+      <DialogContent className="max-w-3xl bg-[#0F2A27] border-[#1A3B37] text-white p-6 shadow-2xl">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <div className="mt-4 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <div className="text-sm text-[#00A693] font-medium">Original</div>
+              <div
+                className="text-sm font-medium"
+                style={{ color: useThemeStore.getState().accentColor }}
+              >
+                Original
+              </div>
               <div className="aspect-auto h-[120px] bg-black/20 rounded-lg overflow-hidden">
                 <img
                   src={imageUrl}
@@ -45,7 +51,12 @@ export function ImagePreviewDialog({
               </div>
             </div>
             <div className="space-y-2">
-              <div className="text-sm text-[#00A693] font-medium">Preview</div>
+              <div
+                className="text-sm font-medium"
+                style={{ color: useThemeStore.getState().accentColor }}
+              >
+                Preview
+              </div>
               <div className="aspect-auto h-[120px] bg-black/20 rounded-lg overflow-hidden">
                 <img
                   src={processedImageUrl}
@@ -63,7 +74,8 @@ export function ImagePreviewDialog({
 
           <div className="flex justify-end gap-2">
             <Button
-              className="bg-[#00A693] hover:bg-[#008F7D] shadow-lg"
+              style={{ backgroundColor: useThemeStore.getState().accentColor }}
+              className="hover:bg-[#008F7D] shadow-lg text-white"
               onClick={() => onDownload(processedImageUrl)}
               size="lg"
             >

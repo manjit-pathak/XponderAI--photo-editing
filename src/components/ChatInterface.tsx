@@ -13,6 +13,7 @@ import { ImageEditorPanel } from "./ImageEditorPanel";
 import { ImageEditor } from "@/lib/ai/imageEditor";
 import { AVAILABLE_MODELS } from "@/lib/ai/config";
 import { imageStore, type StoredImage } from "@/lib/store/imageStore";
+import { useThemeStore } from "@/lib/store/themeStore";
 import {
   Select,
   SelectContent,
@@ -65,14 +66,22 @@ export function ChatInterface() {
   useEffect(() => {
     const images = imageStore.getImages();
     setUploadedImages(images);
+
+    // If there are images, set the current one to the most recent
+    if (images.length > 0) {
+      setCurrentImage(images[images.length - 1]);
+      setCurrentImageIndex(images.length - 1);
+      imageEditor.setCurrentImage(images[images.length - 1].data);
+    }
   }, []);
 
   const handleImageUpload = async (file: File) => {
     try {
+      setIsLoading(true);
       const storedImage = await imageStore.addImage(file);
       setUploadedImages((prev) => [...prev, storedImage]);
       setCurrentImage(storedImage);
-      setCurrentImageIndex((prev) => prev + 1);
+      setCurrentImageIndex(uploadedImages.length);
       imageEditor.setCurrentImage(storedImage.data);
       setMessages((prev) => [
         ...prev,
@@ -86,6 +95,7 @@ export function ChatInterface() {
           content: `I see you've uploaded ${file.name}. What would you like me to do with it? I can help with brightness, contrast, and other adjustments.`,
         },
       ]);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error uploading image:", error);
       setMessages((prev) => [
@@ -96,6 +106,7 @@ export function ChatInterface() {
             "Sorry, I had trouble processing that image. Could you try uploading it again?",
         },
       ]);
+      setIsLoading(false);
     }
   };
 
@@ -204,9 +215,23 @@ export function ChatInterface() {
     >
       {/* Chat Section */}
       <div
-        className={`flex flex-col bg-[#0B1C1A] rounded-lg overflow-hidden transition-all duration-300 ${currentImage && showAdvancedEdit ? "w-[55%]" : "w-full"}`}
+        className={`flex flex-col rounded-lg overflow-hidden transition-all duration-300 shadow-xl ${currentImage && showAdvancedEdit ? "w-[55%]" : "w-full"}`}
+        style={{
+          backgroundColor:
+            useThemeStore.getState().accentColor === "#00A693"
+              ? "#0B1C1A"
+              : "#0F1A1F",
+        }}
       >
-        <div className="p-4 border-b border-[#1A3B37] bg-[#0B1C1A] flex items-center justify-between">
+        <div
+          className="p-4 border-b border-[#1A3B37] flex items-center justify-end"
+          style={{
+            backgroundColor:
+              useThemeStore.getState().accentColor === "#00A693"
+                ? "#0B1C1A"
+                : "#0F1A1F",
+          }}
+        >
           <input
             type="file"
             ref={fileInputRef}
@@ -218,15 +243,10 @@ export function ChatInterface() {
             }}
           />
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-[#00A693] hover:text-[#008F7D] hover:bg-[#1A3B37]"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <ImageIcon className="h-5 w-5" />
-            </Button>
-            <Settings2 className="h-4 w-4 text-[#00A693]" />
+            <Settings2
+              className="h-4 w-4"
+              style={{ color: useThemeStore.getState().accentColor }}
+            />
             <Select value={selectedModel} onValueChange={setSelectedModel}>
               <SelectTrigger className="w-[180px] bg-[#0F2A27] border-[#1A3B37] text-white">
                 <SelectValue placeholder="Select Model" />
@@ -255,9 +275,15 @@ export function ChatInterface() {
               <div
                 className={`max-w-[80%] rounded-lg px-4 py-2 ${
                   message.role === "user"
-                    ? "bg-[#00A693] text-white"
+                    ? `text-white`
                     : "bg-[#0F2A27] text-white"
                 }`}
+                style={{
+                  backgroundColor:
+                    message.role === "user"
+                      ? useThemeStore.getState().accentColor
+                      : "#0F2A27",
+                }}
               >
                 <div className="space-y-2">
                   {message.imageUrl ? (
@@ -270,7 +296,13 @@ export function ChatInterface() {
                     <>
                       {message.content}
                       {message.isStreaming && (
-                        <span className="inline-block w-2 h-4 ml-1 bg-[#00A693] animate-pulse" />
+                        <span
+                          className="inline-block w-2 h-4 ml-1 animate-pulse"
+                          style={{
+                            backgroundColor:
+                              useThemeStore.getState().accentColor,
+                          }}
+                        />
                       )}
                     </>
                   )}
@@ -278,7 +310,10 @@ export function ChatInterface() {
                     <div className="flex gap-2 mt-2">
                       <Button
                         onClick={() => setShowPreview(true)}
-                        className="bg-[#00A693] hover:bg-[#008F7D] gap-2"
+                        style={{
+                          backgroundColor: useThemeStore.getState().accentColor,
+                        }}
+                        className="hover:bg-[#008F7D] gap-2 text-white"
                       >
                         <ImageIcon className="h-4 w-4" />
                         Preview
@@ -314,8 +349,25 @@ export function ChatInterface() {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="p-4 border-t border-[#1A3B37] bg-[#0B1C1A]">
+        <div
+          className="p-4 border-t border-[#1A3B37]"
+          style={{
+            backgroundColor:
+              useThemeStore.getState().accentColor === "#00A693"
+                ? "#0B1C1A"
+                : "#0F1A1F",
+          }}
+        >
           <div className="flex gap-2 items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              style={{ color: useThemeStore.getState().accentColor }}
+              className="hover:text-[#008F7D] hover:bg-[#1A3B37]"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <ImageIcon className="h-5 w-5" />
+            </Button>
             <Input
               placeholder="Ask Sobi about image editing..."
               value={input}
@@ -327,7 +379,8 @@ export function ChatInterface() {
             <Button
               onClick={handleSend}
               disabled={isLoading}
-              className="bg-[#00A693] hover:bg-[#008F7D] text-white"
+              style={{ backgroundColor: useThemeStore.getState().accentColor }}
+              className="hover:bg-[#008F7D] text-white"
             >
               <Send className="h-4 w-4" />
             </Button>
@@ -337,14 +390,23 @@ export function ChatInterface() {
 
       {/* Image Editor Section */}
       {currentImage && showAdvancedEdit && (
-        <div className="w-[45%] bg-[#0F2A27] rounded-lg overflow-hidden transition-all duration-300 flex flex-col h-full">
+        <div
+          className="w-[45%] rounded-lg overflow-hidden transition-all duration-300 flex flex-col h-full shadow-xl"
+          style={{
+            backgroundColor:
+              useThemeStore.getState().accentColor === "#00A693"
+                ? "#0F2A27"
+                : "#0F1A25",
+          }}
+        >
           <div className="p-4 border-b border-[#1A3B37] flex justify-between items-center">
             <h3 className="text-white font-medium">Advanced Image Editor</h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowAdvancedEdit(false)}
-              className="text-[#00A693] hover:text-white hover:bg-[#1A3B37]"
+              style={{ color: useThemeStore.getState().accentColor }}
+              className="hover:text-white hover:bg-[#1A3B37]"
             >
               Close
             </Button>
